@@ -15,13 +15,13 @@ function App() {
       </header>
 
 
-<main className='flex-grow flex items-start justify-center px-4 py-8'>
-<div className='w-full max-w-5xl bg-white rounded-lg shadow-md overflow-hidden'>
-  <div>
+      <main className='flex-grow flex items-start justify-center px-4 py-8'>
+        <div className='w-full max-w-5xl bg-white rounded-lg shadow-md overflow-hidden'>
+          <div className='flex items-center justify-between p-4 border-b border-gray-200'>
 
-  </div>
-</div>
-</main>
+          </div>
+        </div>
+      </main>
 
 
 
