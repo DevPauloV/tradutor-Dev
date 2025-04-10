@@ -51,14 +51,39 @@ function App() {
                 />
               </svg>
             </button>
+
+            <select
+              className='text-sm text-textColor bg-transparent border-none focus:outline-none cursor-pointer'>
+
+              {languages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
           </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-2 '>
+
+            <div className='p-4'>
+              <textarea placeholder='Digite seu Texto...' className='w-full h-40 text-lg text-textColor bg-transparent resize-none border-none outline-none'>
+              </textarea>
+            </div >
+
+            <div className='p-4 bg-segundaryBackground border-l border-gray-200 '>
+              <div className='absolute inset-0 flex items-center justify-center'>
+                <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500'></div>
+              </div>
+            </div>
+
+          </div>
+
+
+
+
+
         </div>
       </main>
-
-
-
-
-
     </div>
   )
 }
