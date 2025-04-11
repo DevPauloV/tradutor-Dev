@@ -32,22 +32,41 @@ function App() {
 
   const [sourceLang, setSourceLang] = useState('pt')
   const [targetLang, setTargetLang] = useState('en')
-  const [SourceText, setSourceText] = useState('')
+  const [sourceText, setSourceText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [translatedText, setTranslatedText] = useState('')
 
   useEffect(() => {
-  handleTranslate()
-  }, [SourceText])
+    handleTranslate()
+  }, [sourceText])
 
 
   const handleTranslate = async () => {
-
-
-https://api.mymemory.translated.net/get?q=Hello World!&langpair=en|it
-
-
-
+    if (!sourceText.trim()) {
+      setTranslatedText('') // Limpa o resultado se o campo estiver vazio
+      return
+    }
+  
+    setIsLoading(true)
+  
+    try {
+      const response = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${sourceLang}|${targetLang}`
+      )
+  
+      if (!response.ok) {
+        throw new Error(`HTTP ERROR: ${response.status}`)
+      }
+  
+      const data = await response.json()
+      setTranslatedText(data.responseData.translatedText)
+    } catch (error) {
+      setTranslatedText(`Erro: ${error.message}`)
+    } finally {
+      setIsLoading(false)
+    }
   }
+  
 
 
   return (
@@ -103,7 +122,7 @@ https://api.mymemory.translated.net/get?q=Hello World!&langpair=en|it
           <div className='grid grid-cols-1 md:grid-cols-2 '>
 
             <div className='p-4'>
-              <textarea value={SourceText} onChange={event => setSourceText(event.target.value)} placeholder='Digite seu Texto...' className='w-full h-40 text-lg text-textColor bg-transparent resize-none border-none outline-none'>
+              <textarea value={sourceText} onChange={event => setSourceText(event.target.value)} placeholder='Digite seu Texto...' className='w-full h-40 text-lg text-textColor bg-transparent resize-none border-none outline-none'>
               </textarea>
             </div >
 
@@ -116,7 +135,7 @@ https://api.mymemory.translated.net/get?q=Hello World!&langpair=en|it
                   <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500'></div>
                 ) : (
 
-                  <p className='text-lg tex-textColor'></p>
+                  <p className='text-lg tex-textColor'>{translatedText}</p>
                 )
                 }
 
@@ -132,7 +151,8 @@ https://api.mymemory.translated.net/get?q=Hello World!&langpair=en|it
 
       <footer className='bg-white border-t border-gray-200 mt-auto'>
         <div className='max-w-5xl mx-auto px-4 py-3 text-sm text-headerColor'>
-          &copy; {new Date().getFullYear}Paulo
+        &copy; {new Date().getFullYear()} Paulo
+
         </div>
       </footer>
 
