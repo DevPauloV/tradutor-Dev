@@ -37,7 +37,17 @@ function App() {
   const [translatedText, setTranslatedText] = useState('')
 
   useEffect(() => {
-    handleTranslate()
+
+    if (sourceText) {
+      const delay = setTimeout(() => {
+        handleTranslate()
+      }, 500)
+
+      return () => clearTimeout(delay)
+    }
+
+
+
   }, [sourceText])
 
 
@@ -46,18 +56,18 @@ function App() {
       setTranslatedText('') // Limpa o resultado se o campo estiver vazio
       return
     }
-  
+
     setIsLoading(true)
-  
+
     try {
       const response = await fetch(
         `https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${sourceLang}|${targetLang}`
       )
-  
+
       if (!response.ok) {
         throw new Error(`HTTP ERROR: ${response.status}`)
       }
-  
+
       const data = await response.json()
       setTranslatedText(data.responseData.translatedText)
     } catch (error) {
@@ -66,7 +76,7 @@ function App() {
       setIsLoading(false)
     }
   }
-  
+
 
 
   return (
@@ -151,7 +161,7 @@ function App() {
 
       <footer className='bg-white border-t border-gray-200 mt-auto'>
         <div className='max-w-5xl mx-auto px-4 py-3 text-sm text-headerColor'>
-        &copy; {new Date().getFullYear()} Paulo
+          &copy; {new Date().getFullYear()} Paulo
 
         </div>
       </footer>
