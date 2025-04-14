@@ -35,6 +35,7 @@ function App() {
   const [sourceText, setSourceText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [translatedText, setTranslatedText] = useState('')
+  const [error, setError] = useState('')
 
   useEffect(() => {
 
@@ -48,16 +49,12 @@ function App() {
 
 
 
-  }, [sourceText])
+  }, [sourceText, targetLang, sourceLang])
 
 
   const handleTranslate = async () => {
-    if (!sourceText.trim()) {
-      setTranslatedText('') // Limpa o resultado se o campo estiver vazio
-      return
-    }
-
     setIsLoading(true)
+    setError('')
 
     try {
       const response = await fetch(
@@ -69,15 +66,23 @@ function App() {
       }
 
       const data = await response.json()
+
       setTranslatedText(data.responseData.translatedText)
-    } catch (error) {
-      setTranslatedText(`Erro: ${error.message}`)
+
+
+    } catch (err) {
+      setError(`Erro ao tentar traduzir: ${err.message}, tente novamente. `)
     } finally {
       setIsLoading(false)
     }
   }
 
-
+  const swapTranslate = () => {
+    setSourceLang(targetLang)
+    setTargetLang(sourceLang)
+    setSourceText(translatedText)
+    setTranslatedText(sourceText)
+  }
 
   return (
 
@@ -102,7 +107,7 @@ function App() {
               ))}
             </select>
 
-            <button className='p-2 rounded-full hover:bg-gray-100 outline-none'>
+            <button className="p-2 rounded-full hover:bg-gray-100 outline-none" onClick={swapTranslate}>
               <svg
                 className="w-5 h-5 text-headerColor"
                 fill="none"
@@ -137,25 +142,28 @@ function App() {
             </div >
 
             <div className='p-4 relative bg-segundaryBackground border-l border-gray-200 '>
-              <div className='absolute inset-0 flex items-center justify-center'>
 
-
-                {isLoading ? (
-
+              {isLoading ? (
+                <div className='absolute inset-0 flex items-center justify-center'>
                   <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500'></div>
-                ) : (
+                </div>
+              ) : (
+                <p className='text-lg tex-textColor'>{translatedText}</p>
+              )
+              }
 
-                  <p className='text-lg tex-textColor'>{translatedText}</p>
-                )
-                }
 
 
-              </div>
             </div>
-
-
-
           </div>
+
+          {error && (
+            <div className='p-4 bg-red-100 border-t border-red-400 text-red-700'>
+              {error}
+            </div>
+          )
+          }
+
         </div>
       </main>
 
